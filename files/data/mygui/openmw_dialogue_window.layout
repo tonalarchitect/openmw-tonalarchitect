@@ -26,6 +26,11 @@
         <Widget type="MWList" skin="MW_SimpleList" position="398 31 166 328" name="TopicsList" align="Right VStretch">
         </Widget>
 
+        <!-- The Chat button -->
+        <Widget type="Button" skin="MW_Button" position="398 333 166 23" name="ChatButton" align="Right Bottom">
+            <Property key="Caption" value="Chat"/>
+        </Widget>
+
         <!-- The Goodbye button -->
         <Widget type="Button" skin="MW_Button" position="398 366 166 23" name="ByeButton" align="Right Bottom">
             <Property key="Caption" value="#{sGoodbye}"/>

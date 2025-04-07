@@ -149,6 +149,7 @@ set(BUILTIN_DATA_FILES
     mygui/openmw_count_window.layout
     mygui/openmw_dialogue_window.layout
     mygui/openmw_dialogue_window.skin.xml
+    mygui/openmw_ai_chat_dialog.layout
     mygui/openmw_edit.skin.xml
     mygui/openmw_hud_box.skin.xml
     mygui/openmw_hud_energybar.skin.xml

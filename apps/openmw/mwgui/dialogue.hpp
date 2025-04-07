@@ -22,6 +22,7 @@ namespace Gui
 namespace MWGui
 {
     class DialogueWindow;
+    class AIChatDialog;
 
     class ResponseCallback : public MWBase::DialogueManager::ResponseCallback
     {
@@ -139,6 +140,7 @@ namespace MWGui
     {
     public:
         DialogueWindow();
+        ~DialogueWindow() override;
 
         void onTradeComplete();
 
@@ -174,6 +176,7 @@ namespace MWGui
 
         void onSelectListItem(const std::string& topic, int id);
         void onByeClicked(MyGUI::Widget* _sender);
+        void onChatClicked(MyGUI::Widget* _sender);
         void onMouseWheel(MyGUI::Widget* _sender, int _rel);
         void onWindowResize(MyGUI::Window* _sender);
         void onTopicActivated(const std::string& topicId);
@@ -212,8 +215,10 @@ namespace MWGui
         MyGUI::ProgressBar* mDispositionBar;
         MyGUI::TextBox* mDispositionText;
         MyGUI::Button* mGoodbyeButton;
+        MyGUI::Button* mChatButton;
 
         PersuasionDialog mPersuasionDialog;
+        AIChatDialog* mAIChatDialog;
 
         MyGUI::IntSize mCurrentWindowSize;
 

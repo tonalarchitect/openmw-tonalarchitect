@@ -44,7 +44,7 @@ add_openmw_dir (mwgui
     tradeitemmodel companionitemmodel pickpocketitemmodel controllers savegamedialog
     recharge mode videowidget backgroundimage itemwidget screenfader debugwindow spellmodel spellview
     draganddrop timeadvancer jailscreen itemchargeview keyboardnavigation textcolours statswatcher
-    postprocessorhud settings
+    postprocessorhud settings aichat aichatdialog
     )
 
 add_openmw_dir (mwdialogue
@@ -137,7 +137,11 @@ if(BUILD_OPENMW)
         )
     endif()
 
-    target_link_libraries(openmw openmw-lib)
+    target_link_libraries(openmw PRIVATE 
+        openmw-lib
+        curl
+        jsoncpp
+    )
 endif()
 
 # Sound stuff - here so CMake doesn't stupidly recompile EVERYTHING
@@ -155,6 +159,7 @@ target_link_libraries(openmw-lib
     ${OSGVIEWER_LIBRARIES}
     ${OSGGA_LIBRARIES}
     ${OSGSHADOW_LIBRARIES}
+    ${OSGFX_LIBRARIES}
     ${OSGDB_LIBRARIES}
     ${OSGUTIL_LIBRARIES}
     ${OSG_LIBRARIES}
@@ -167,6 +172,15 @@ target_link_libraries(openmw-lib
     "osg-ffmpeg-videoplayer"
     "oics"
     components
+    curl
+    jsoncpp
+)
+
+# Add include directories for dependencies
+target_include_directories(openmw-lib PRIVATE
+    ${CURL_INCLUDE_DIRS}      # Add curl include path
+    # ${JSONCPP_INCLUDE_DIRS}   # Variable was empty, comment out
+    /usr/include/jsoncpp    # Manually add standard jsoncpp include path
 )
 
 if (MSVC AND PRECOMPILE_HEADERS_WITH_MSVC)

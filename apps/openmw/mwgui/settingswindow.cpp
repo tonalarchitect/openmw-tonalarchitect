@@ -169,7 +169,7 @@ namespace MWGui
                 if (init)
                     current->eventMouseButtonClick += MyGUI::newDelegate(this, &SettingsWindow::onButtonToggled);
             }
-            if (type == sliderType)
+            else if (type == sliderType)
             {
                 MyGUI::ScrollBar* scroll = current->castType<MyGUI::ScrollBar>();
                 std::string valueStr;
@@ -218,6 +218,19 @@ namespace MWGui
                         += MyGUI::newDelegate(this, &SettingsWindow::onSliderChangePosition);
                 if (scroll->getVisible())
                     updateSliderLabel(scroll, valueStr);
+            }
+            else if (type == "Edit")
+            {
+                MyGUI::EditBox* edit = current->castType<MyGUI::EditBox>();
+                const std::string value = Settings::Manager::getString(
+                    std::string(getSettingName(current)), std::string(getSettingCategory(current)));
+                edit->setCaption(value);
+                
+                if (init && std::string(getSettingName(current)) == "anthropic_api_key")
+                {
+                    edit->eventEditTextChange += MyGUI::newDelegate(this, &SettingsWindow::onApiKeyChanged);
+                    mApiKeyWidget = edit; // Store reference to the widget
+                }
             }
 
             configureWidgets(current, init);
@@ -1127,5 +1140,10 @@ namespace MWGui
     {
         mResolutionList->setScrollPosition(0);
         mControlsBox->setViewOffset(MyGUI::IntPoint(0, 0));
+    }
+
+    void SettingsWindow::onApiKeyChanged(MyGUI::EditBox* sender)
+    {
+        Settings::Manager::setString("anthropic_api_key", "Game", sender->getCaption());
     }
 }

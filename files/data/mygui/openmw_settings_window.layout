@@ -138,6 +138,21 @@
                         <Property key="Caption" value="#{OMWEngine:Crosshair}"/>
                     </Widget>
                 </Widget>
+                
+                <!-- AI Chat Settings -->
+                <Widget type="Widget" position="4 380 352 74" align="Left Top HStretch">
+                    <Widget type="TextBox" skin="HeaderText" position="0 0 352 18" align="Left Top">
+                        <Property key="Caption" value="#{OMWEngine:AI Chat}"/>
+                    </Widget>
+                    <Widget type="TextBox" skin="SandText" position="0 24 352 18" align="Left Top">
+                        <Property key="Caption" value="#{OMWEngine:Anthropic API Key}"/>
+                    </Widget>
+                    <Widget type="EditBox" skin="MW_TextEdit" position="0 46 352 28" align="Left Top HStretch">
+                        <UserString key="SettingCategory" value="Game"/>
+                        <UserString key="SettingName" value="anthropic_api_key"/>
+                        <UserString key="SettingType" value="Edit"/>
+                    </Widget>
+                </Widget>
             </Widget>
             <Widget type="TabItem">
                 <Property key="Caption" value=" #{OMWEngine:Audio} "/>

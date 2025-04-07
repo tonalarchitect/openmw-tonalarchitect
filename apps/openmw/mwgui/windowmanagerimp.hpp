@@ -118,6 +118,7 @@ namespace MWGui
     class PostProcessorHud;
     class JailScreen;
     class KeyboardNavigation;
+    class AIChatDialog;
 
     class WindowManager : public MWBase::WindowManager
     {

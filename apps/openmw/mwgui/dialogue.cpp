@@ -7,8 +7,11 @@
 #include <MyGUI_UString.h>
 #include <MyGUI_Window.h>
 
-#include <components/debug/debuglog.hpp>
 #include <components/esm3/loadcrea.hpp>
+#include <components/esm3/loadrace.hpp>
+#include <components/esm3/loadfact.hpp>
+#include <components/esm3/loadnpc.hpp>
+#include <components/esm3/loadcell.hpp>
 #include <components/settings/values.hpp>
 #include <components/translation/translation.hpp>
 #include <components/widgets/box.hpp>
@@ -31,6 +34,7 @@
 
 #include "bookpage.hpp"
 #include "textcolours.hpp"
+#include "aichatdialog.hpp"
 
 #include "journalbooks.hpp" // to_utf8_span
 
@@ -320,8 +324,13 @@ namespace MWGui
         getWidget(mTopicsList, "TopicsList");
         mTopicsList->eventItemSelected += MyGUI::newDelegate(this, &DialogueWindow::onSelectListItem);
 
+        // Get buttons
         getWidget(mGoodbyeButton, "ByeButton");
+        getWidget(mChatButton, "ChatButton");
+        
+        // Set up button events
         mGoodbyeButton->eventMouseButtonClick += MyGUI::newDelegate(this, &DialogueWindow::onByeClicked);
+        mChatButton->eventMouseButtonClick += MyGUI::newDelegate(this, &DialogueWindow::onChatClicked);
 
         getWidget(mDispositionBar, "Disposition");
         getWidget(mDispositionText, "DispositionText");
@@ -335,6 +344,15 @@ namespace MWGui
 
         mMainWidget->castType<MyGUI::Window>()->eventWindowChangeCoord
             += MyGUI::newDelegate(this, &DialogueWindow::onWindowResize);
+            
+        // Create the AI chat dialog
+        mAIChatDialog = new AIChatDialog(this);
+        mAIChatDialog->setVisible(false);
+    }
+
+    DialogueWindow::~DialogueWindow()
+    {
+        delete mAIChatDialog;
     }
 
     void DialogueWindow::onTradeComplete()
@@ -385,7 +403,30 @@ namespace MWGui
             MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Dialogue);
         }
     }
+    
+    void DialogueWindow::onChatClicked(MyGUI::Widget* _sender)
+    {
+        if (mPtr.isEmpty())
+        {
+            return;
+        }
 
+        if (!mAIChatDialog)
+        {
+            return;
+        }
+
+        std::string npcName = std::string(mPtr.getClass().getName(mPtr));
+        
+        // Create a simple context about the NPC, without complex engine queries
+        std::string context = "You are speaking with " + npcName + 
+            ". Respond as this character would in the world of Morrowind. Keep responses concise and in-character.";
+
+        mAIChatDialog->setNpcData(npcName, context);
+
+        mAIChatDialog->setVisible(true);
+    }
+    
     void DialogueWindow::onSelectListItem(const std::string& topic, int id)
     {
         MWBase::DialogueManager* dialogueManager = MWBase::Environment::get().getDialogueManager();
@@ -688,6 +729,9 @@ namespace MWGui
 
         bool topicsEnabled = !MWBase::Environment::get().getDialogueManager()->isInChoice() && !mGoodbye;
         mTopicsList->setEnabled(topicsEnabled);
+        
+        // Chat button should be enabled when the topics list is enabled
+        mChatButton->setEnabled(topicsEnabled);
     }
 
     void DialogueWindow::notifyLinkClicked(TypesetBook::InteractiveId link)

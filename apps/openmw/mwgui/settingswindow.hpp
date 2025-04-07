@@ -69,6 +69,8 @@ namespace MWGui
         LuaUi::LuaAdapter* mScriptAdapter;
         int mCurrentPage;
 
+        MyGUI::EditBox* mApiKeyWidget;
+
         void onTabChanged(MyGUI::TabControl* _sender, size_t index);
         void onOkButtonClicked(MyGUI::Widget* _sender);
         void onTextureFilteringChanged(MyGUI::ComboBox* _sender, size_t pos);
@@ -107,6 +109,8 @@ namespace MWGui
 
         void onScriptFilterChange(MyGUI::EditBox*);
         void onScriptListSelection(MyGUI::ListBox*, size_t index);
+
+        void onApiKeyChanged(MyGUI::EditBox* sender);
 
         void apply();
 

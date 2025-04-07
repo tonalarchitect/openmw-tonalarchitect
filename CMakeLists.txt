@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.16.0)
 
+message(STATUS "--- Top Level CMakeLists.txt Start ---")
+message(STATUS "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
+
 #  set the timestamps of extracted contents to the time of extraction
 # remove if cmake version is >= 3.24
 if(POLICY CMP0135)
@@ -441,7 +445,9 @@ if(NOT HAVE_STDINT_H)
 endif()
 
 if(OPENMW_USE_SYSTEM_OSG)
-    find_package(OpenSceneGraph 3.6.5 REQUIRED ${USED_OSG_COMPONENTS})  # Bump to 3.6.6 when released
+    find_package(OpenSceneGraph REQUIRED COMPONENTS
+        osgDB osgFX osgViewer osgText osgUtil osgGA osgAnimation osgParticle osgShadow
+    )
 
     if(OSG_STATIC)
         find_package(OSGPlugins REQUIRED COMPONENTS ${USED_OSG_PLUGINS})
@@ -461,12 +467,12 @@ endif(HAVE_MULTIVIEW)
 
 set(BOOST_COMPONENTS iostreams program_options system)
 
-find_package(Boost 1.70.0 CONFIG REQUIRED COMPONENTS ${BOOST_COMPONENTS} OPTIONAL_COMPONENTS ${BOOST_OPTIONAL_COMPONENTS})
+find_package(Boost REQUIRED COMPONENTS program_options iostreams system)
 
 if(OPENMW_USE_SYSTEM_MYGUI)
-    find_package(MyGUI 3.4.3 REQUIRED)
+    find_package(MyGUI REQUIRED)
 endif()
-find_package(SDL2 2.0.10 REQUIRED)
+find_package(SDL2 REQUIRED)
 find_package(OpenAL REQUIRED)
 find_package(ZLIB REQUIRED)
 
@@ -518,7 +524,72 @@ if (NOT APPLE)  # this is modified for macOS use later in "apps/open[mw|cs]/CMak
     set(OPENMW_RESOURCES_ROOT ${OpenMW_BINARY_DIR})
 endif ()
 
+# Temporarily comment out subdirectories for debugging
 add_subdirectory(files/)
+
+# Extern
+add_subdirectory (extern/osg-ffmpeg-videoplayer)
+add_subdirectory (extern/oics)
+add_subdirectory (extern/Base64)
+if (BUILD_OPENCS OR BUILD_OPENCS_TESTS)
+    add_subdirectory (extern/osgQt)
+endif()
+
+# Components
+add_subdirectory (components)
+
+# Apps and tools
+if (BUILD_OPENMW OR BUILD_OPENMW_TESTS)
+    add_subdirectory( apps/openmw )
+endif()
+
+if (BUILD_BSATOOL)
+    add_subdirectory( apps/bsatool )
+endif()
+
+if (BUILD_ESMTOOL)
+    add_subdirectory( apps/esmtool )
+endif()
+
+if (BUILD_LAUNCHER)
+    add_subdirectory( apps/launcher )
+endif()
+
+if (BUILD_MWINIIMPORTER)
+    add_subdirectory( apps/mwiniimporter )
+endif()
+
+if (BUILD_ESSIMPORTER)
+    add_subdirectory (apps/essimporter )
+endif()
+
+if (BUILD_OPENCS OR BUILD_OPENCS_TESTS)
+    add_subdirectory (apps/opencs)
+endif()
+
+if (BUILD_WIZARD)
+    add_subdirectory(apps/wizard)
+endif()
+
+if (BUILD_NIFTEST)
+    add_subdirectory(apps/niftest)
+endif()
+
+if (BUILD_NAVMESHTOOL)
+    add_subdirectory(apps/navmeshtool)
+endif()
+
+if (BUILD_BULLETOBJECTTOOL)
+    add_subdirectory(apps/bulletobjecttool)
+endif()
+
+if (BUILD_COMPONENTS_TESTS)
+    add_subdirectory(apps/components_tests)
+endif()
+
+if (BUILD_BENCHMARKS)
+    add_subdirectory(apps/benchmarks)
+endif()
 
 # Specify build paths
 
@@ -612,72 +683,68 @@ endif (CMAKE_CXX_COMPILER_ID STREQUAL GNU OR CMAKE_CXX_COMPILER_ID STREQUAL Clan
 
 # Extern
 
-add_subdirectory (extern/osg-ffmpeg-videoplayer)
-add_subdirectory (extern/oics)
-add_subdirectory (extern/Base64)
-if (BUILD_OPENCS OR BUILD_OPENCS_TESTS)
-    add_subdirectory (extern/osgQt)
-endif()
-
-if (OPENMW_CXX_FLAGS)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OPENMW_CXX_FLAGS}")
-endif()
+# add_subdirectory (extern/osg-ffmpeg-videoplayer)
+# add_subdirectory (extern/oics)
+# add_subdirectory (extern/Base64)
+# if (BUILD_OPENCS OR BUILD_OPENCS_TESTS)
+#     add_subdirectory (extern/osgQt)
+# endif()
 
 # Components
-add_subdirectory (components)
+# add_subdirectory (components)
 
 # Apps and tools
-if (BUILD_OPENMW OR BUILD_OPENMW_TESTS)
-    add_subdirectory( apps/openmw )
-endif()
+# if (BUILD_OPENMW OR BUILD_OPENMW_TESTS)
+#     add_subdirectory( apps/openmw )
+# endif()
 
-if (BUILD_BSATOOL)
-    add_subdirectory( apps/bsatool )
-endif()
+# if (BUILD_BSATOOL)
+#     add_subdirectory( apps/bsatool )
+# endif()
 
-if (BUILD_ESMTOOL)
-    add_subdirectory( apps/esmtool )
-endif()
+# if (BUILD_ESMTOOL)
+#     add_subdirectory( apps/esmtool )
+# endif()
 
-if (BUILD_LAUNCHER)
-    add_subdirectory( apps/launcher )
-endif()
+# if (BUILD_LAUNCHER)
+#     add_subdirectory( apps/launcher )
+# endif()
 
-if (BUILD_MWINIIMPORTER)
-    add_subdirectory( apps/mwiniimporter )
-endif()
+# if (BUILD_MWINIIMPORTER)
+#     add_subdirectory( apps/mwiniimporter )
+# endif()
 
-if (BUILD_ESSIMPORTER)
-    add_subdirectory (apps/essimporter )
-endif()
+# if (BUILD_ESSIMPORTER)
+#     add_subdirectory (apps/essimporter )
+# endif()
 
-if (BUILD_OPENCS OR BUILD_OPENCS_TESTS)
-    add_subdirectory (apps/opencs)
-endif()
+# if (BUILD_OPENCS OR BUILD_OPENCS_TESTS)
+#     add_subdirectory (apps/opencs)
+# endif()
 
-if (BUILD_WIZARD)
-    add_subdirectory(apps/wizard)
-endif()
+# if (BUILD_WIZARD)
+#     add_subdirectory(apps/wizard)
+# endif()
 
-if (BUILD_NIFTEST)
-    add_subdirectory(apps/niftest)
-endif()
+# if (BUILD_NIFTEST)
+#     add_subdirectory(apps/niftest)
+# endif()
 
-if (BUILD_COMPONENTS_TESTS)
-    add_subdirectory(apps/components_tests)
-endif()
+# if (BUILD_COMPONENTS_TESTS)
+#     add_subdirectory(apps/components_tests)
+# endif()
 
-if (BUILD_BENCHMARKS)
-    add_subdirectory(apps/benchmarks)
-endif()
+# if (BUILD_BENCHMARKS)
+#     add_subdirectory(apps/benchmarks)
+# endif()
 
-if (BUILD_NAVMESHTOOL)
-    add_subdirectory(apps/navmeshtool)
-endif()
+# if (BUILD_NAVMESHTOOL)
+#     add_subdirectory(apps/navmeshtool)
+# endif()
 
-if (BUILD_BULLETOBJECTTOOL)
-    add_subdirectory(apps/bulletobjecttool)
-endif()
+# if (BUILD_BULLETOBJECTTOOL)
+#     add_subdirectory(apps/bulletobjecttool)
+# endif()
 
 if (BUILD_OPENCS_TESTS)
     add_subdirectory(apps/opencs_tests)

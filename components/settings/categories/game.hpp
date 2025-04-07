@@ -76,6 +76,7 @@ namespace Settings
         SettingValue<DetourNavigator::CollisionShapeType> mActorCollisionShapeType{ mIndex, "Game",
             "actor collision shape type" };
         SettingValue<bool> mPlayerMovementIgnoresAnimation{ mIndex, "Game", "player movement ignores animation" };
+        SettingValue<std::string> mAnthropicApiKey{ mIndex, "Game", "anthropic_api_key", "" };
     };
 }
 
